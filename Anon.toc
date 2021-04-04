@@ -1,0 +1,5 @@
+## Interface: 11306
+## Author: Mageiden / Robdog
+## Title: Anon
+## Notes: Replaces enemy playernames with class names.
+core.lua
