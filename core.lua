@@ -4,6 +4,20 @@ frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 frame:RegisterEvent("CHAT_MSG_TEXT_EMOTE")
 
 local function eventHandler(self, event, ...)	
+	
+	
+	-- EDIT THIS LINE BELOW TO CHANGE YOUR NAME
+	NewName = "Rob"
+	PlayerName = GetUnitName("player")
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	local inInstance, instanceType = IsInInstance()
 	--turn off the 3d-model names above friendly player+pet heads while in unimportant stuff
 	if event == "ZONE_CHANED_NEW_AREA" and inInstance and (instanceType == "arena" or instanceType == "raid" or instanceType == "party") then -- keep them off for bgs ("pvp")
@@ -14,11 +28,6 @@ local function eventHandler(self, event, ...)
 		SetCVar("UnitNameFriendlyPlayerName", 0)
 		SetCVar("UnitNameFriendlyPetName", 0)
 	end
-
-	-- EDIT THIS LINE BELOW TO CHANGE YOUR NAME
-	NewName = "Rob"
-	PlayerName = GetUnitName("player")
-
 
 	-- Change Target's Target UnitFrame Name
 	TFTNC = CreateFrame("Frame", "TargetFrameTargetNameChange")
