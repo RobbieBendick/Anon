@@ -148,7 +148,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	end
 
 	-- Warlock Pet tooltips
-	if UnitPlayerControlled("mouseover") and not player and (targetClassFileName == "PALADIN" or targetClassFileName == "WARLOCK") then
+	if UnitPlayerControlled("mouseover") and not player and (targetClassFileName == "PALADIN" or targetClassFileName == "WARLOCK" or targetClassFileName == "MAGE") then
 		GameTooltip:ClearLines()
 		GameTooltip:AddLine("Warlock Pet", 1,1,1)
 		GameTooltip:AddLine(GameTooltipStatusBar:Show())
