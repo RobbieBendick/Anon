@@ -16,10 +16,7 @@ local function eventHandler(self, event, ...)
 	
 	
 	
-	
-	
-	local inInstance, instanceType = IsInInstance()
-	
+		
 	-- Change Target's Target UnitFrame Name
 	TFTNC = CreateFrame("Frame", "TargetFrameTargetNameChange")
 	local function ChangeTargetofTargetName(self)
