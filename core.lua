@@ -19,16 +19,7 @@ local function eventHandler(self, event, ...)
 	
 	
 	local inInstance, instanceType = IsInInstance()
-	--turn off the 3d-model names above friendly player+pet heads while in unimportant stuff
-	if event == "ZONE_CHANED_NEW_AREA" and inInstance and (instanceType == "arena" or instanceType == "raid" or instanceType == "party") then -- keep them off for bgs ("pvp")
-		if InCombatLockdown() then return end
-		SetCVar("UnitNameFriendlyPlayerName", 1)
-		SetCVar("UnitNameFriendlyPetName", 1)
-	else
-		SetCVar("UnitNameFriendlyPlayerName", 0)
-		SetCVar("UnitNameFriendlyPetName", 0)
-	end
-
+	
 	-- Change Target's Target UnitFrame Name
 	TFTNC = CreateFrame("Frame", "TargetFrameTargetNameChange")
 	local function ChangeTargetofTargetName(self)
@@ -148,9 +139,16 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	end
 
 	-- Warlock Pet tooltips
-	if UnitPlayerControlled("mouseover") and not player and (targetClassFileName == "PALADIN" or targetClassFileName == "WARLOCK" or targetClassFileName == "MAGE") then
+	if UnitPlayerControlled("mouseover") and targetClassFileName == "PALADIN" and not player or targetClassId == 9 then
 		GameTooltip:ClearLines()
 		GameTooltip:AddLine("Warlock Pet", 1,1,1)
+		GameTooltip:AddLine(GameTooltipStatusBar:Show())
+	end
+		
+	--Mage Pet tooltip
+	if UnitPlayerControlled("mouseover") and targetClassName == "Water Elemental" then
+		GameTooltip:ClearLines()
+		GameTooltip:AddLine("Water Elemental", 1,1,1)
 		GameTooltip:AddLine(GameTooltipStatusBar:Show())
 	end
 
