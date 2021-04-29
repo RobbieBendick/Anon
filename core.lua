@@ -24,7 +24,55 @@ local function eventHandler(self, event, ...)
 	-- Change Focus UnitFrame Name
 	FFNC = CreateFrame("Frame", "FocusFrameNameChange")
 	local function ChangeFocusName(self)
+		local focusClassName, focusClassFileName, focusClassId = UnitClass("focus")
 		local FN = GetUnitName("focus")
+		local player = UnitIsPlayer("focus")
+
+		--Class Colored Focus Frames
+		-- Warrior
+		if focusClassId == 1 and player then 
+			FocusFrameNameBackground:SetVertexColor(0.78,0.61,0.43) --brown
+		end
+		-- Paladin
+		if focusClassId == 2 and player then 
+			FocusFrameNameBackground:SetVertexColor(0.96, 0.55, 0.73) --Pink
+		end
+
+		-- Hunter
+		if focusClassId == 3 and player then 
+			FocusFrameNameBackground:SetVertexColor(0.67, 0.83, 0.45) --Green
+		end
+
+		-- Rogue
+		if focusClassId == 4 and player then 
+			FocusFrameNameBackground:SetVertexColor(1, 0.96, 0.41) -- Yellow
+		end
+
+		-- Priest
+		if focusClassId == 5 and player then 
+			FocusFrameNameBackground:SetVertexColor(1, 1, 1) --White
+		end
+
+		-- Shaman
+		if focusClassId == 7 and player then 
+			FocusFrameNameBackground:SetVertexColor(0, 0.44, 0.87) --Dark Blue
+		end
+
+		-- Mage
+		if focusClassId == 8 and player then 
+			FocusFrameNameBackground:SetVertexColor(0.41, 0.80, 0.94) --Light Blue
+		end
+
+		-- Warlock
+		if focusClassId == 9 and player then 
+			FocusFrameNameBackground:SetVertexColor(0.58, 0.51,0.79) --Purple
+		end
+
+		-- Druid
+		if focusClassId == 11 and player then 
+			FocusFrameNameBackground:SetVertexColor(1 , 0.49, 0.04) --Orange
+		end
+
 		if PlayerName == FN then
 			FocusFrame.name:SetText(NewName)
 		else FocusFrame.name:SetText(UnitClass("focus"))
