@@ -92,6 +92,7 @@ local function eventHandler(self, event, ...)
 		local FTN = GetUnitName("focustarget")
 		if PlayerName == FTN then
 			FocusFrameToT.name:SetText(NewName)
+		else FocusFrameToT.name:SetText(UnitClass("focustarget"))
 		end
 	end
 	FFTNC:SetScript("OnUpdate", ChangeFocusTargetName)
