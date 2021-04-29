@@ -29,6 +29,12 @@ local function eventHandler(self, event, ...)
 			FocusFrame.name:SetText(NewName)
 		else FocusFrame.name:SetText(UnitClass("focus"))
 		end
+		--show arena numbers on focus
+		for i=1,5 do
+			if UnitIsUnit("focus","arena"..i) then
+				FocusFrame.name:SetText(UnitClass("arena"..i) .. " " .. i)
+			end
+		end
 	end
 	FFNC:SetScript("OnUpdate", ChangeFocusName)
 
@@ -57,7 +63,7 @@ end
 		local targetClassName, targetClassFileName, targetClassId = UnitClass("target")
 		local player = UnitIsPlayer("target")
 
-		-- Change TargetFrame Nam
+		-- Change TargetFrame Name
 		if TN == PlayerName then
 			TargetFrame.name:SetText(NewName)
 		elseif UnitPlayerControlled("target") and targetClassFileName == "WARRIOR" and not player and targetClassId == 1 then
