@@ -1,3 +1,4 @@
+
 local frame = CreateFrame("FRAME", "Anon")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
@@ -75,7 +76,15 @@ local function eventHandler(self, event, ...)
 
 		if PlayerName == FN then
 			FocusFrame.name:SetText(NewName)
-		else FocusFrame.name:SetText(UnitClass("focus"))
+		end
+		if UnitCreatureType("focus") == "Beast" and UnitPlayerControlled() then
+			FocusFrame.name:SetText("Hunter Pet")
+		end
+		if UnitCreatureType("focus") == "Totem" then
+			FocusFrame.name:SetText(GetUnitName("focus"))
+		end
+		if player then	
+			FocusFrame.name:SetText(UnitClass("focus"))
 		end
 		--show arena numbers on focus
 		for i=1,5 do
@@ -112,14 +121,16 @@ end
 		local targetClassName, targetClassFileName, targetClassId = UnitClass("target")
 		local player = UnitIsPlayer("target")
 
-		-- Change TargetFrame Name
-		if TN == PlayerName then
-			TargetFrame.name:SetText(NewName)
-		elseif UnitPlayerControlled("target") and targetClassFileName == "WARRIOR" and not player and targetClassId == 1 then
-			TargetFrame.name:SetText("Hunter Pet")
-		else
-			TargetFrame.name:SetText(UnitClass("target"))
-		end
+			-- Change TargetFrame Name
+			if TN == PlayerName then
+				TargetFrame.name:SetText(NewName)
+			elseif UnitPlayerControlled("target") and UnitCreatureType("target") == "Beast" and not player then
+				TargetFrame.name:SetText("Hunter Pet")
+			else
+				if player then
+					TargetFrame.name:SetText(UnitClass("target"))	
+				end
+			end	
 
 		-- places arena numbers on targets
 		for i=1,5 do
@@ -183,16 +194,29 @@ frame:SetScript("OnEvent", eventHandler)
 	local player = UnitIsPlayer("mouseover")
 
 	-- Hunter pet tooltip
-	if UnitPlayerControlled("mouseover") and targetClassFileName == "WARRIOR" and not player then 
+	if UnitPlayerControlled("mouseover") and UnitCreatureType("mouseover") == "Beast" and not player then 
 		GameTooltip:ClearLines()
 		GameTooltip:AddLine("Hunter Pet", 1,1,1)
 		GameTooltip:AddLine(GameTooltipStatusBar:Show())
 	end
 
-	-- Warlock Pet tooltip
-	if UnitPlayerControlled("mouseover") and targetClassFileName == "PALADIN" and not player then
+	-- Warlock Pet tooltips
+	local pets = {
+		"Succubus", "Imp", "Voidwalker", "Felhunter", "Shadowfiend",
+	}
+	for i=1,#pets do
+		if UnitCreatureFamily("mouseover") == pets[i] then
+			GameTooltip:ClearLines()
+			GameTooltip:AddLine(pets[i], 1,1,1)
+			GameTooltip:AddLine(GameTooltipStatusBar:Show())
+		end
+	end
+
+
+	-- Shaman Totems
+	if UnitCreatureType("mouseover") == "Totem" then
 		GameTooltip:ClearLines()
-		GameTooltip:AddLine("Warlock Pet", 1,1,1)
+		GameTooltip:AddLine(TN, 1,1,1)
 		GameTooltip:AddLine(GameTooltipStatusBar:Show())
 	end
 
