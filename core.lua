@@ -187,10 +187,9 @@ end
 	TFNC:SetScript("OnUpdate", ChangeTargetName)
 frame:SetScript("OnEvent", eventHandler)
 
-
-	-- Change Tooltip from names of players to classes and pets to pet
+	-- Change Tooltip from names of players to classes and changes pet names
 	GameTooltip:HookScript("OnTooltipSetUnit", function(self)
-	local targetClassName, targetClassFileName, targetClassId = UnitClass("mouseover")
+	local targetClassName, _, _ = UnitClass("mouseover")
 	local player = UnitIsPlayer("mouseover")
 
 	-- Hunter pet tooltip
@@ -202,7 +201,7 @@ frame:SetScript("OnEvent", eventHandler)
 
 	-- Warlock Pet tooltips
 	local pets = {
-		"Succubus", "Imp", "Voidwalker", "Felhunter", "Shadowfiend",
+		"Succubus", "Imp", "Voidwalker", "Felhunter"
 	}
 	for i=1,#pets do
 		if UnitCreatureFamily("mouseover") == pets[i] then
@@ -212,11 +211,10 @@ frame:SetScript("OnEvent", eventHandler)
 		end
 	end
 
-
 	-- Shaman Totems
 	if UnitCreatureType("mouseover") == "Totem" then
 		GameTooltip:ClearLines()
-		GameTooltip:AddLine(TN, 1,1,1)
+		GameTooltip:AddLine(GetUnitName("mouseover"), 1,1,1)
 		GameTooltip:AddLine(GameTooltipStatusBar:Show())
 	end
 
@@ -256,9 +254,60 @@ hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 			f.name:SetTextColor(1,1,1)
 		elseif f.unit:find("nameplate") then
 			if f.unit and UnitIsPlayer(f.unit) then -- player nameplates
+				local className, _, _ = UnitClass(f.unit)
+				--Warrior
+				if className == "Warrior" then 
+					f.healthBar:SetStatusBarColor(0.78,0.61,0.43) --brown
+				end
+
+				-- Paladin
+				if className == "Paladin" then 
+					f.healthBar:SetStatusBarColor(0.96, 0.55, 0.73) --Pink
+				end
+
+				-- Hunter
+				if className == "Hunter" then 
+					f.healthBar:SetStatusBarColor(0.67, 0.83, 0.45) --Green
+				end
+
+				-- Rogue
+				if className == "Rogue" then 
+					f.healthBar:SetStatusBarColor(1, 0.96, 0.41) -- Yellow
+				end
+
+				-- Priest
+				if className == "Priest" then 
+					f.healthBar:SetStatusBarColor(1,1,1) --white
+				end
+
+				-- Shaman
+				if className == "Shaman" then 
+					f.healthBar:SetStatusBarColor(0, 0.44, 0.87) --Dark Blue
+				end
+
+				-- Mage
+				if className == "Mage" then 
+					f.healthBar:SetStatusBarColor(0.41, 0.80, 0.94) --Light Blue
+				end
+
+				-- Warlock
+				if className == "Warlock" then 
+					f.healthBar:SetStatusBarColor(0.58, 0.51,0.79) --Purple
+				end
+
+				-- Druid
+				if className == "Druid" then 
+					f.healthBar:SetStatusBarColor(1 , 0.49, 0.04) --orange
+				end
 				f.name:SetText(UnitClass(f.unit))
 				f.name:SetTextColor(1,1,1)
-			end 
+				for i=1,5 do
+					if UnitIsUnit(f.unit,"arena"..i) then
+						f.name:SetText(UnitClass(f.unit) .. " " .. i)
+						f.name:SetTextColor(1,1,0) 
+					end 
+				end
+			end
 		end
 	end
 end)
