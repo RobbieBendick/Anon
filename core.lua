@@ -3,20 +3,13 @@ frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 frame:RegisterEvent("CHAT_MSG_TEXT_EMOTE")
 
-local function eventHandler(self, event, ...)	
-	
-	
+local function eventHandler(self, event, ...)
+
 	-- EDIT THIS LINE BELOW TO CHANGE YOUR NAME
 	NewName = "Rob"
 	PlayerName = GetUnitName("player")
-	
-	
-	
-	
-	
-	
-	
-		
+
+
 	-- Change Target's Target UnitFrame Name
 	TFTNC = CreateFrame("Frame", "TargetFrameTargetNameChange")
 	local function ChangeTargetofTargetName(self)
@@ -34,6 +27,7 @@ local function eventHandler(self, event, ...)
 		local FN = GetUnitName("focus")
 		if PlayerName == FN then
 			FocusFrame.name:SetText(NewName)
+		else FocusFrame.name:SetText(UnitClass("focus"))
 		end
 	end
 	FFNC:SetScript("OnUpdate", ChangeFocusName)
@@ -59,28 +53,33 @@ end
 	-- Change Target UnitFrame Name
 	TFNC = CreateFrame("Frame", "TargetFrameNameChange")
 	local function ChangeTargetName(self)
-		local TN = GetUnitName("target")
+		local TN, _ = GetUnitName("target")
 		local targetClassName, targetClassFileName, targetClassId = UnitClass("target")
 		local player = UnitIsPlayer("target")
 
-		-- Change TargetFrame Name
-		if PlayerName == TN then
+		-- Change TargetFrame Nam
+		if TN == PlayerName then
 			TargetFrame.name:SetText(NewName)
 		elseif UnitPlayerControlled("target") and targetClassFileName == "WARRIOR" and not player and targetClassId == 1 then
 			TargetFrame.name:SetText("Hunter Pet")
-		elseif UnitPlayerControlled("target") and (targetClassFileName == "PALADIN" or targetClassFileName == "WARLOCK"	) and not player then
-			TargetFrame.name:SetText("Warlock Pet")
-		elseif UnitIsPlayer("target") then
+		else
 			TargetFrame.name:SetText(UnitClass("target"))
 		end
-		--Class Colored Target Frames
-		-- Warrior
-		if targetClassId == 1 and player then
-			TargetFrameNameBackground:SetVertexColor(0.78,0.61,0.43) --brown
+
+		-- places arena numbers on targets
+		for i=1,5 do
+			if UnitIsUnit("target","arena"..i) then
+				TargetFrame.name:SetText(UnitClass("arena"..i) .. " " .. i)
+			end
 		end
 
+		--Class Colored Target Frames
+		-- Warrior
+		if targetClassId == 1 and player then 
+			TargetFrameNameBackground:SetVertexColor(0.78,0.61,0.43) --brown
+		end
 		-- Paladin
-		if targetClassId == 2 and player then
+		if targetClassId == 2 and player then 
 			TargetFrameNameBackground:SetVertexColor(0.96, 0.55, 0.73) --Pink
 		end
 
@@ -123,25 +122,25 @@ end
 frame:SetScript("OnEvent", eventHandler)
 
 
--- Change Tooltip names of players and pets
-GameTooltip:HookScript("OnTooltipSetUnit", function(self)
+	-- Change Tooltip from names of players to classes and pets to pet
+	GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	local targetClassName, targetClassFileName, targetClassId = UnitClass("mouseover")
 	local player = UnitIsPlayer("mouseover")
 
-	-- Hunter pet tooltips
+	-- Hunter pet tooltip
 	if UnitPlayerControlled("mouseover") and targetClassFileName == "WARRIOR" and not player then 
 		GameTooltip:ClearLines()
 		GameTooltip:AddLine("Hunter Pet", 1,1,1)
 		GameTooltip:AddLine(GameTooltipStatusBar:Show())
 	end
 
-	-- Warlock Pet tooltips
-	if UnitPlayerControlled("mouseover") and targetClassFileName == "PALADIN" and not player or targetClassId == 9 then
+	-- Warlock Pet tooltip
+	if UnitPlayerControlled("mouseover") and targetClassFileName == "PALADIN" and not player then
 		GameTooltip:ClearLines()
 		GameTooltip:AddLine("Warlock Pet", 1,1,1)
 		GameTooltip:AddLine(GameTooltipStatusBar:Show())
 	end
-		
+
 	--Mage Pet tooltip
 	if UnitPlayerControlled("mouseover") and targetClassName == "Water Elemental" then
 		GameTooltip:ClearLines()
@@ -171,18 +170,17 @@ end)
 GameTooltip:HookScript("OnTooltipCleared", function()GameTooltip:AddLine(GameTooltipStatusBar:Hide())end)
 
 --Change nameplate name to classname and all pets to Pet
-hooksecurefunc("CompactUnitFrame_UpdateName", function(f)
+hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 	if f.unit:find("nameplate") then -- pet nameplates
 		if f.unit and not UnitIsPlayer(f.unit) and UnitPlayerControlled(f.unit) then
 			f.name:SetText("Pet")
 			f.name:SetTextColor(1,1,1)
-		end
-		if f.unit:find("nameplate") then
+		elseif f.unit:find("nameplate") then
 			if f.unit and UnitIsPlayer(f.unit) then -- player nameplates
 				f.name:SetText(UnitClass(f.unit))
 				f.name:SetTextColor(1,1,1)
-			end
-		end	
+			end 
+		end
 	end
 end)
 
@@ -203,7 +201,7 @@ local emotesToHide = {
 }
 	-- ^^^^^^Removes emotes that contains a message in this list^^^^^
 ChatFrame_AddMessageEventFilter("CHAT_MSG_TEXT_EMOTE", function(frame, event, message, sender, ...)
-	for i,v in ipairs(emotesToHide) do
+	for i,v in ipairs(emotesToHide) do 
 		if message:find(v) then
 			return true
 		end
