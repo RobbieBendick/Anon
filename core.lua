@@ -11,6 +11,11 @@ local function eventHandler(self, event, ...)
 	PlayerName = GetUnitName("player")
 
 
+	
+
+
+
+
 	-- Change Target's Target UnitFrame Name
 	TFTNC = CreateFrame("Frame", "TargetFrameTargetNameChange")
 	local function ChangeTargetofTargetName(self)
@@ -77,7 +82,7 @@ local function eventHandler(self, event, ...)
 		if PlayerName == FN then
 			FocusFrame.name:SetText(NewName)
 		end
-		if UnitCreatureType("focus") == "Beast" and UnitPlayerControlled() then
+		if UnitCreatureType("focus") == "Beast" and UnitPlayerControlled("focus") then
 			FocusFrame.name:SetText("Hunter Pet")
 		end
 		if UnitCreatureType("focus") == "Totem" then
@@ -187,15 +192,20 @@ end
 	TFNC:SetScript("OnUpdate", ChangeTargetName)
 frame:SetScript("OnEvent", eventHandler)
 
+
 	-- Change Tooltip from names of players to classes and changes pet names
 	GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	local targetClassName, _, _ = UnitClass("mouseover")
 	local player = UnitIsPlayer("mouseover")
 
+	local function AddLine(line)
+		GameTooltip:AddLine(line, 1,1,1)
+	end
+
 	-- Hunter pet tooltip
 	if UnitPlayerControlled("mouseover") and UnitCreatureType("mouseover") == "Beast" and not player then 
 		GameTooltip:ClearLines()
-		GameTooltip:AddLine("Hunter Pet", 1,1,1)
+		AddLine("Hunter Pet", 1,1,1)
 		GameTooltip:AddLine(GameTooltipStatusBar:Show())
 	end
 
@@ -206,7 +216,7 @@ frame:SetScript("OnEvent", eventHandler)
 	for i=1,#pets do
 		if UnitCreatureFamily("mouseover") == pets[i] then
 			GameTooltip:ClearLines()
-			GameTooltip:AddLine(pets[i], 1,1,1)
+			AddLine(pets[i])
 			GameTooltip:AddLine(GameTooltipStatusBar:Show())
 		end
 	end
@@ -214,31 +224,31 @@ frame:SetScript("OnEvent", eventHandler)
 	-- Shaman Totems
 	if UnitCreatureType("mouseover") == "Totem" then
 		GameTooltip:ClearLines()
-		GameTooltip:AddLine(GetUnitName("mouseover"), 1,1,1)
+		AddLine(GetUnitName("mouseover"))
 		GameTooltip:AddLine(GameTooltipStatusBar:Show())
 	end
 
 	--Mage Pet tooltip
 	if UnitPlayerControlled("mouseover") and targetClassName == "Water Elemental" then
 		GameTooltip:ClearLines()
-		GameTooltip:AddLine("Water Elemental", 1,1,1)
+		AddLine("Water Elemental")
 		GameTooltip:AddLine(GameTooltipStatusBar:Show())
 	end
 
 	-- Player tooltips
     if UnitIsPlayer("mouseover") and PlayerName ~= UnitName("mouseover") then 
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(UnitClass("mouseover"), 1,1,1)
+        AddLine(UnitClass("mouseover"))
         if UnitLevel("mouseover") == -1 then
-            GameTooltip:AddLine("Level " .. (UnitLevel("player") + 10) .. "+ " .. UnitRace("mouseover") .. " " .. UnitClass("mouseover") .. " (Player)", 1,1,1)
+            AddLine("Level " .. (UnitLevel("player") + 10) .. "+ " .. UnitRace("mouseover") .. " " .. UnitClass("mouseover") .. " (Player)")
         else
-            GameTooltip:AddLine("Level " .. UnitLevel("mouseover") .. " " .. UnitRace("mouseover") .. " " .. UnitClass("mouseover") .. " (Player)", 1,1,1)
+            AddLine("Level " .. UnitLevel("mouseover") .. " " .. UnitRace("mouseover") .. " " .. UnitClass("mouseover") .. " (Player)")
         end
         if UnitIsPlayer("mouseover") then
-            GameTooltip:AddLine(GameTooltipStatusBar:Show())
+            GameTooltipStatusBar:Show()
         end
         if UnitIsPVP("mouseover") then 
-            GameTooltip:AddLine("PvP", 1,1,1)
+            AddLine("PvP", 1,1,1)
     	end
 	end
 end)
@@ -255,6 +265,7 @@ hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 		if f.unit and not UnitIsPlayer(f.unit) and UnitPlayerControlled(f.unit) and UnitCreatureType(f.unit) == "Beast" then
 			f.name:SetText("Hunter Pet")
 			f.name:SetTextColor(1,1,1)
+			f.healthBar:SetStatusBarColor(1,0,0)
 		end
 		if f.unit and UnitCreatureType(f.unit) == "Totem" then
 			f.name:SetText(GetUnitName(f.unit))
@@ -312,8 +323,8 @@ hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 					end 
 				end
 			end
-	end
-end)
+		end
+	end)
 
 local emotesToHide = {
 	" spits on",
