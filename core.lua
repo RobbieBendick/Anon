@@ -248,59 +248,63 @@ GameTooltip:HookScript("OnTooltipCleared", function()GameTooltip:AddLine(GameToo
 
 --Change nameplate name to classname and all pets to Pet
 hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
+	local pets = {
+		"Succubus", "Imp", "Voidwalker", "Felhunter"
+	}
 	if f.unit:find("nameplate") then -- pet nameplates
-		if f.unit and not UnitIsPlayer(f.unit) and UnitPlayerControlled(f.unit) then
-			f.name:SetText("Pet")
+		if f.unit and not UnitIsPlayer(f.unit) and UnitPlayerControlled(f.unit) and UnitCreatureType(f.unit) == "Beast" then
+			f.name:SetText("Hunter Pet")
 			f.name:SetTextColor(1,1,1)
-		elseif f.unit:find("nameplate") then
+		end
+		if f.unit and UnitCreatureType(f.unit) == "Totem" then
+			f.name:SetText(GetUnitName(f.unit))
+		end
+		for i=1,#pets do
+			if f.unit and UnitCreatureFamily(f.unit) == pets[i] then
+				f.name:SetText(pets[i])
+				f.name:SetTextColor(1,1,1)
+			end
+		end
 			if f.unit and UnitIsPlayer(f.unit) then -- player nameplates
 				local className, _, _ = UnitClass(f.unit)
-				--Warrior
 				if className == "Warrior" then 
 					f.healthBar:SetStatusBarColor(0.78,0.61,0.43) --brown
 				end
 
-				-- Paladin
 				if className == "Paladin" then 
 					f.healthBar:SetStatusBarColor(0.96, 0.55, 0.73) --Pink
 				end
 
-				-- Hunter
 				if className == "Hunter" then 
 					f.healthBar:SetStatusBarColor(0.67, 0.83, 0.45) --Green
 				end
 
-				-- Rogue
 				if className == "Rogue" then 
 					f.healthBar:SetStatusBarColor(1, 0.96, 0.41) -- Yellow
 				end
 
-				-- Priest
 				if className == "Priest" then 
 					f.healthBar:SetStatusBarColor(1,1,1) --white
 				end
 
-				-- Shaman
 				if className == "Shaman" then 
 					f.healthBar:SetStatusBarColor(0, 0.44, 0.87) --Dark Blue
 				end
 
-				-- Mage
 				if className == "Mage" then 
 					f.healthBar:SetStatusBarColor(0.41, 0.80, 0.94) --Light Blue
 				end
 
-				-- Warlock
 				if className == "Warlock" then 
 					f.healthBar:SetStatusBarColor(0.58, 0.51,0.79) --Purple
 				end
 
-				-- Druid
 				if className == "Druid" then 
 					f.healthBar:SetStatusBarColor(1 , 0.49, 0.04) --orange
 				end
 				f.name:SetText(UnitClass(f.unit))
 				f.name:SetTextColor(1,1,1)
+				--places arena numbers for nameplates
 				for i=1,5 do
 					if UnitIsUnit(f.unit,"arena"..i) then
 						f.name:SetText(UnitClass(f.unit) .. " " .. i)
@@ -308,7 +312,6 @@ hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 					end 
 				end
 			end
-		end
 	end
 end)
 
