@@ -14,7 +14,24 @@ local function eventHandler(self, event, ...)
 	
 
 
+	
 
+
+
+
+	 ClassColors = {
+		{0.78,0.61,0.43}, -- brown
+		{0.96, 0.55, 0.73}, -- Pink
+		{0.67, 0.83, 0.45}, --Green
+		{1, 0.96, 0.41}, --Yellow
+		{1,1,1}, --white
+		{0, 0.44, 0.87}, --darkblue
+		{0, 0.44, 0.87}, --placeholder
+		{0.41, 0.80, 0.94}, --lightblue
+		{0.58, 0.51,0.79}, --purple
+		{0.58, 0.51,0.79}, --placeholder
+		{1, 0.49, 0.04} --orange
+	}
 
 	-- Change Target's Target UnitFrame Name
 	TFTNC = CreateFrame("Frame", "TargetFrameTargetNameChange")
@@ -33,52 +50,32 @@ local function eventHandler(self, event, ...)
 		local focusClassName, focusClassFileName, focusClassId = UnitClass("focus")
 		local FN = GetUnitName("focus")
 		local player = UnitIsPlayer("focus")
-
-		--Class Colored Focus Frames
-		-- Warrior
-		if focusClassId == 1 and player then 
-			FocusFrameNameBackground:SetVertexColor(0.78,0.61,0.43) --brown
+		local function focusVertexColor(r,g,b)
+			FocusFrameNameBackground:SetVertexColor(r,g,b)
 		end
-		-- Paladin
-		if focusClassId == 2 and player then 
-			FocusFrameNameBackground:SetVertexColor(0.96, 0.55, 0.73) --Pink
+		-- Class-Colored Focus Frame
+		for i=1,11 do
+			local r
+			local g
+			local b
+			if i ~= 6 and i ~= 10 then
+				for j=1,3 do
+					if j == 1 then
+						r = ClassColors[i][j]
+					end
+					if j == 2 then
+						g = ClassColors[i][j]
+					end
+					if j == 3 then
+						b = ClassColors[i][j]
+					end
+				end
+				if focusClassId == i and player then
+					focusVertexColor(r,g,b)
+				end
+			end
 		end
-
-		-- Hunter
-		if focusClassId == 3 and player then 
-			FocusFrameNameBackground:SetVertexColor(0.67, 0.83, 0.45) --Green
-		end
-
-		-- Rogue
-		if focusClassId == 4 and player then 
-			FocusFrameNameBackground:SetVertexColor(1, 0.96, 0.41) -- Yellow
-		end
-
-		-- Priest
-		if focusClassId == 5 and player then 
-			FocusFrameNameBackground:SetVertexColor(1, 1, 1) --White
-		end
-
-		-- Shaman
-		if focusClassId == 7 and player then 
-			FocusFrameNameBackground:SetVertexColor(0, 0.44, 0.87) --Dark Blue
-		end
-
-		-- Mage
-		if focusClassId == 8 and player then 
-			FocusFrameNameBackground:SetVertexColor(0.41, 0.80, 0.94) --Light Blue
-		end
-
-		-- Warlock
-		if focusClassId == 9 and player then 
-			FocusFrameNameBackground:SetVertexColor(0.58, 0.51,0.79) --Purple
-		end
-
-		-- Druid
-		if focusClassId == 11 and player then 
-			FocusFrameNameBackground:SetVertexColor(1 , 0.49, 0.04) --Orange
-		end
-
+		
 		if PlayerName == FN then
 			FocusFrame.name:SetText(NewName)
 		end
@@ -144,54 +141,34 @@ end
 			end
 		end
 
-		--Class Colored Target Frames
-		-- Warrior
-		if targetClassId == 1 and player then 
-			TargetFrameNameBackground:SetVertexColor(0.78,0.61,0.43) --brown
+		local function targetVertexColor(r,g,b)
+			TargetFrameNameBackground:SetVertexColor(r,g,b)
 		end
-		-- Paladin
-		if targetClassId == 2 and player then 
-			TargetFrameNameBackground:SetVertexColor(0.96, 0.55, 0.73) --Pink
-		end
-
-		-- Hunter
-		if targetClassId == 3 and player then 
-			TargetFrameNameBackground:SetVertexColor(0.67, 0.83, 0.45) --Green
-		end
-
-		-- Rogue
-		if targetClassId == 4 and player then 
-			TargetFrameNameBackground:SetVertexColor(1, 0.96, 0.41) -- Yellow
-		end
-
-		-- Priest
-		if targetClassId == 5 and player then 
-			TargetFrameNameBackground:SetVertexColor(1, 1, 1) --White
-		end
-
-		-- Shaman
-		if targetClassId == 7 and player then 
-			TargetFrameNameBackground:SetVertexColor(0, 0.44, 0.87) --Dark Blue
-		end
-
-		-- Mage
-		if targetClassId == 8 and player then 
-			TargetFrameNameBackground:SetVertexColor(0.41, 0.80, 0.94) --Light Blue
-		end
-
-		-- Warlock
-		if targetClassId == 9 and player then 
-			TargetFrameNameBackground:SetVertexColor(0.58, 0.51,0.79) --Purple
-		end
-
-		-- Druid
-		if targetClassId == 11 and player then 
-			TargetFrameNameBackground:SetVertexColor(1 , 0.49, 0.04) --Orange
+		-- Class-Colored Player Target Frame
+		for i=1,11 do
+			local r
+			local g
+			local b
+			if i ~= 6 and i ~= 10 then
+				for j=1,3 do
+					if j == 1 then
+						r = ClassColors[i][j]
+					end
+					if j == 2 then
+						g = ClassColors[i][j]
+					end
+					if j == 3 then
+						b = ClassColors[i][j]
+					end
+				end
+				if targetClassId == i and player then
+					targetVertexColor(r,g,b)
+				end
+			end
 		end
 	end
 	TFNC:SetScript("OnUpdate", ChangeTargetName)
 frame:SetScript("OnEvent", eventHandler)
-
 
 	-- Change Tooltip from names of players to classes and changes pet names
 	GameTooltip:HookScript("OnTooltipSetUnit", function(self)
@@ -205,7 +182,7 @@ frame:SetScript("OnEvent", eventHandler)
 	-- Hunter pet tooltip
 	if UnitPlayerControlled("mouseover") and UnitCreatureType("mouseover") == "Beast" and not player then 
 		GameTooltip:ClearLines()
-		AddLine("Hunter Pet", 1,1,1)
+		AddLine("Hunter Pet")
 		GameTooltip:AddLine(GameTooltipStatusBar:Show())
 	end
 
@@ -258,6 +235,7 @@ GameTooltip:HookScript("OnTooltipCleared", function()GameTooltip:AddLine(GameToo
 
 --Change nameplate name to classname and all pets to Pet
 hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
+	local player = UnitIsPlayer(f.unit)
 	local pets = {
 		"Succubus", "Imp", "Voidwalker", "Felhunter"
 	}
@@ -265,7 +243,7 @@ hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 		if f.unit and not UnitIsPlayer(f.unit) and UnitPlayerControlled(f.unit) and UnitCreatureType(f.unit) == "Beast" then
 			f.name:SetText("Hunter Pet")
 			f.name:SetTextColor(1,1,1)
-			f.healthBar:SetStatusBarColor(1,0,0)
+			f.healthBar:SetStatusBarColor(0.67, 0.83, 0.45)
 		end
 		if f.unit and UnitCreatureType(f.unit) == "Totem" then
 			f.name:SetText(GetUnitName(f.unit))
@@ -277,41 +255,31 @@ hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 			end
 		end
 			if f.unit and UnitIsPlayer(f.unit) then -- player nameplates
-				local className, _, _ = UnitClass(f.unit)
-				if className == "Warrior" then 
-					f.healthBar:SetStatusBarColor(0.78,0.61,0.43) --brown
+				local className, classFileName, classId = UnitClass(f.unit)
+				local function healthBarColor(r,g,b)
+					f.healthBar:SetStatusBarColor(r,g,b)
 				end
-
-				if className == "Paladin" then 
-					f.healthBar:SetStatusBarColor(0.96, 0.55, 0.73) --Pink
-				end
-
-				if className == "Hunter" then 
-					f.healthBar:SetStatusBarColor(0.67, 0.83, 0.45) --Green
-				end
-
-				if className == "Rogue" then 
-					f.healthBar:SetStatusBarColor(1, 0.96, 0.41) -- Yellow
-				end
-
-				if className == "Priest" then 
-					f.healthBar:SetStatusBarColor(1,1,1) --white
-				end
-
-				if className == "Shaman" then 
-					f.healthBar:SetStatusBarColor(0, 0.44, 0.87) --Dark Blue
-				end
-
-				if className == "Mage" then 
-					f.healthBar:SetStatusBarColor(0.41, 0.80, 0.94) --Light Blue
-				end
-
-				if className == "Warlock" then 
-					f.healthBar:SetStatusBarColor(0.58, 0.51,0.79) --Purple
-				end
-
-				if className == "Druid" then 
-					f.healthBar:SetStatusBarColor(1 , 0.49, 0.04) --orange
+				--Class-Colored Nameplates
+				for i=1,11 do
+					local r
+					local g
+					local b
+					if i ~= 6 and i ~= 10 then
+						for j=1,3 do
+							if j == 1 then
+								r = ClassColors[i][j]
+							end
+							if j == 2 then
+								g = ClassColors[i][j]
+							end
+							if j == 3 then
+								b = ClassColors[i][j]
+							end
+						end
+						if classId == i and player then
+							healthBarColor(r,g,b)
+						end
+					end
 				end
 				f.name:SetText(UnitClass(f.unit))
 				f.name:SetTextColor(1,1,1)
