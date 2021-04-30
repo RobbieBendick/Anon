@@ -1,4 +1,3 @@
-
 local frame = CreateFrame("FRAME", "Anon")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
@@ -20,7 +19,7 @@ local function eventHandler(self, event, ...)
 
 
 	 ClassColors = {
-		{0.78,0.61,0.43}, -- brown
+		{0.78, 0.61, 0.43}, -- brown
 		{0.96, 0.55, 0.73}, -- Pink
 		{0.67, 0.83, 0.45}, --Green
 		{1, 0.96, 0.41}, --Yellow
@@ -75,18 +74,19 @@ local function eventHandler(self, event, ...)
 				end
 			end
 		end
-		
-		if PlayerName == FN then
-			FocusFrame.name:SetText(NewName)
-		end
+
 		if UnitCreatureType("focus") == "Beast" and UnitPlayerControlled("focus") then
 			FocusFrame.name:SetText("Hunter Pet")
 		end
 		if UnitCreatureType("focus") == "Totem" then
 			FocusFrame.name:SetText(GetUnitName("focus"))
+			FocusFrameNameBackground:SetVertexColor(0.67, 0.83, 0.45)
 		end
 		if player then	
 			FocusFrame.name:SetText(UnitClass("focus"))
+		end
+		if PlayerName == FN then
+			FocusFrame.name:SetText(NewName)
 		end
 		--show arena numbers on focus
 		for i=1,5 do
@@ -243,7 +243,7 @@ hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 		if f.unit and not UnitIsPlayer(f.unit) and UnitPlayerControlled(f.unit) and UnitCreatureType(f.unit) == "Beast" then
 			f.name:SetText("Hunter Pet")
 			f.name:SetTextColor(1,1,1)
-			f.healthBar:SetStatusBarColor(0.67, 0.83, 0.45)
+			f.healthBar:SetStatusBarColor(0.67, 0.83, 0.45) -- green
 		end
 		if f.unit and UnitCreatureType(f.unit) == "Totem" then
 			f.name:SetText(GetUnitName(f.unit))
@@ -308,6 +308,10 @@ local emotesToHide = {
 	" pats",
 	" pets",
 	" flex",
+	" cheers",
+	" licks",
+	" barks",
+	" yawn",
 }
 	-- ^^^^^^Removes emotes that contains a message in this list^^^^^
 ChatFrame_AddMessageEventFilter("CHAT_MSG_TEXT_EMOTE", function(frame, event, message, sender, ...)
