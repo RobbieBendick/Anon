@@ -62,7 +62,7 @@ local function eventHandler(self, event, ...)
 					if j == 1 then
 						r = ClassColors[i][j]
 					end
-					if j == 2 then
+					if j == 2 then	
 						g = ClassColors[i][j]
 					end
 					if j == 3 then
@@ -80,7 +80,6 @@ local function eventHandler(self, event, ...)
 		end
 		if UnitCreatureType("focus") == "Totem" then
 			FocusFrame.name:SetText(GetUnitName("focus"))
-			FocusFrameNameBackground:SetVertexColor(0.67, 0.83, 0.45)
 		end
 		if player then	
 			FocusFrame.name:SetText(UnitClass("focus"))
@@ -109,65 +108,68 @@ local function eventHandler(self, event, ...)
 	FFTNC:SetScript("OnUpdate", ChangeFocusTargetName)
 end
 
-	-- Change Player UnitFrame Name
-	PFNC = CreateFrame("Frame", "PlayerFrameNameChange")
-	local function ChangePlayerName(self)
-		PlayerFrame.name:SetText(NewName)
-	end
-	PFNC:SetScript("OnUpdate", ChangePlayerName)
+-- Change Player UnitFrame Name
+PFNC = CreateFrame("Frame", "PlayerFrameNameChange")
+local function ChangePlayerName(self)
+	PlayerFrame.name:SetText(NewName)
+end
+PFNC:SetScript("OnUpdate", ChangePlayerName)
 
-	-- Change Target UnitFrame Name
-	TFNC = CreateFrame("Frame", "TargetFrameNameChange")
-	local function ChangeTargetName(self)
-		local TN, _ = GetUnitName("target")
-		local targetClassName, targetClassFileName, targetClassId = UnitClass("target")
-		local player = UnitIsPlayer("target")
+-- Change Target UnitFrame Name
+TFNC = CreateFrame("Frame", "TargetFrameNameChange")
+local function ChangeTargetName(self)
+	local TN, _ = GetUnitName("target")
+	local targetClassName, targetClassFileName, targetClassId = UnitClass("target")
+	local player = UnitIsPlayer("target")
 
-			-- Change TargetFrame Name
-			if TN == PlayerName then
-				TargetFrame.name:SetText(NewName)
-			elseif UnitPlayerControlled("target") and UnitCreatureType("target") == "Beast" and not player then
-				TargetFrame.name:SetText("Hunter Pet")
-			else
-				if player then
-					TargetFrame.name:SetText(UnitClass("target"))	
-				end
-			end	
-
-		-- places arena numbers on targets
+		-- Change TargetFrame Name
+		if TN == PlayerName then
+			TargetFrame.name:SetText(NewName)
+		elseif UnitPlayerControlled("target") and UnitCreatureType("target") == "Beast" and not player then
+			TargetFrame.name:SetText("Hunter Pet")
+			TargetFrameNameBackground:SetVertexColor(0.67, 0.83, 0.45) -- green
+		else
+			if player then
+				TargetFrame.name:SetText(UnitClass("target"))	
+			end
+		end	
+	-- places arena numbers on targets
 		for i=1,5 do
 			if UnitIsUnit("target","arena"..i) then
 				TargetFrame.name:SetText(UnitClass("arena"..i) .. " " .. i)
+			elseif UnitIsUnit("target", "party"..i) then
+				TargetFrame.name:SetText(UnitClass("party"..i) .. " " .. i)
 			end
 		end
+	
 
-		local function targetVertexColor(r,g,b)
-			TargetFrameNameBackground:SetVertexColor(r,g,b)
-		end
-		-- Class-Colored Player Target Frame
-		for i=1,11 do
-			local r
-			local g
-			local b
-			if i ~= 6 and i ~= 10 then
-				for j=1,3 do
-					if j == 1 then
-						r = ClassColors[i][j]
-					end
-					if j == 2 then
-						g = ClassColors[i][j]
-					end
-					if j == 3 then
-						b = ClassColors[i][j]
-					end
+	local function targetVertexColor(r,g,b)
+		TargetFrameNameBackground:SetVertexColor(r,g,b)
+	end
+	-- Class-Colored Player Target Frame
+	for i=1,11 do
+		local r
+		local g
+		local b
+		if i ~= 6 and i ~= 10 then
+			for j=1,3 do
+				if j == 1 then
+					r = ClassColors[i][j]
 				end
-				if targetClassId == i and player then
-					targetVertexColor(r,g,b)
+				if j == 2 then
+					g = ClassColors[i][j]
 				end
+				if j == 3 then
+					b = ClassColors[i][j]
+				end
+			end
+			if targetClassId == i and player then
+				targetVertexColor(r,g,b)
 			end
 		end
 	end
-	TFNC:SetScript("OnUpdate", ChangeTargetName)
+end
+TFNC:SetScript("OnUpdate", ChangeTargetName)
 frame:SetScript("OnEvent", eventHandler)
 
 	-- Change Tooltip from names of players to classes and changes pet names
@@ -239,12 +241,19 @@ hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 	local pets = {
 		"Succubus", "Imp", "Voidwalker", "Felhunter"
 	}
+	local className, classFileName, classId = UnitClass(f.unit)
 	if f.unit:find("nameplate") then -- pet nameplates
+		f.healthBar.border:Hide()
 		if f.unit and not UnitIsPlayer(f.unit) and UnitPlayerControlled(f.unit) and UnitCreatureType(f.unit) == "Beast" then
 			f.name:SetText("Hunter Pet")
 			f.name:SetTextColor(1,1,1)
 			f.healthBar:SetStatusBarColor(0.67, 0.83, 0.45) -- green
 		end
+		if className == "Water Elemental" then
+			f.healthBar:SetStatusBarColor(0.41, 0.80, 0.94) -- light blue
+		end
+
+
 		if f.unit and UnitCreatureType(f.unit) == "Totem" then
 			f.name:SetText(GetUnitName(f.unit))
 		end
@@ -259,7 +268,6 @@ hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 				local function healthBarColor(r,g,b)
 					f.healthBar:SetStatusBarColor(r,g,b)
 				end
-				--Class-Colored Nameplates
 				for i=1,11 do
 					local r
 					local g
@@ -276,7 +284,7 @@ hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 								b = ClassColors[i][j]
 							end
 						end
-						if classId == i and player then
+						if classId == i then
 							healthBarColor(r,g,b)
 						end
 					end
