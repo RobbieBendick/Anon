@@ -8,7 +8,7 @@ SetCVar("ShowClassColorInNameplate", 1) -- change 1 to 0 if you want to turn it 
 local function eventHandler(self, event, ...)
 
 	-- EDIT THIS LINE BELOW TO CHANGE YOUR NAME
-	NewName = "Rob"
+	NewName = ""
 	PlayerName = GetUnitName("player")
 
 
@@ -114,6 +114,10 @@ end
 PFNC = CreateFrame("Frame", "PlayerFrameNameChange")
 local function ChangePlayerName(self)
 	PlayerFrame.name:SetText(NewName)
+	--hides pet name if exists
+	if UnitExists("pet") then
+		PetName:Hide()
+	end
 end
 PFNC:SetScript("OnUpdate", ChangePlayerName)
 
@@ -174,8 +178,10 @@ end
 TFNC:SetScript("OnUpdate", ChangeTargetName)
 frame:SetScript("OnEvent", eventHandler)
 
+
+
 	-- Change Tooltip from names of players to classes and changes pet names
-	GameTooltip:HookScript("OnTooltipSetUnit", function(self)
+GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	local targetClassName, _, _ = UnitClass("mouseover")
 	local player = UnitIsPlayer("mouseover")
 
