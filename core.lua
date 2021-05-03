@@ -2,6 +2,8 @@ local frame = CreateFrame("FRAME", "Anon")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 frame:RegisterEvent("CHAT_MSG_TEXT_EMOTE")
+-- turn on nameplate classcolors
+SetCVar("ShowClassColorInNameplate", 1) -- change 1 to 0 if you want to turn it off
 
 local function eventHandler(self, event, ...)
 
@@ -267,27 +269,6 @@ hooksecurefunc("CompactUnitFrame_UpdateName",function(f)
 				local className, classFileName, classId = UnitClass(f.unit)
 				local function healthBarColor(r,g,b)
 					f.healthBar:SetStatusBarColor(r,g,b)
-				end
-				for i=1,11 do
-					local r
-					local g
-					local b
-					if i ~= 6 and i ~= 10 then
-						for j=1,3 do
-							if j == 1 then
-								r = ClassColors[i][j]
-							end
-							if j == 2 then
-								g = ClassColors[i][j]
-							end
-							if j == 3 then
-								b = ClassColors[i][j]
-							end
-						end
-						if classId == i then
-							healthBarColor(r,g,b)
-						end
-					end
 				end
 				f.name:SetText(UnitClass(f.unit))
 				f.name:SetTextColor(1,1,1)
