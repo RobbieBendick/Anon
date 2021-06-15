@@ -139,7 +139,7 @@ local function ChangeTargetName(self)
 				TargetFrame.name:SetText(UnitClass("target"))	
 			end
 		end	
-	-- places arena numbers on targets
+	-- places arena and party numbers on targets
 		for i=1,5 do
 			if UnitIsUnit("target","arena"..i) then
 				TargetFrame.name:SetText(UnitClass("arena"..i) .. " " .. i)
