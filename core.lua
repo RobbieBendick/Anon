@@ -2,8 +2,6 @@ local frame = CreateFrame("FRAME", "Anon")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 frame:RegisterEvent("CHAT_MSG_TEXT_EMOTE")
--- turn on nameplate classcolors
-SetCVar("ShowClassColorInNameplate", 1) -- change 1 to 0 if you want to turn it off
 
 local function eventHandler(self, event, ...)
 
